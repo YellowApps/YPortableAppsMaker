@@ -88,7 +88,7 @@ Function Select-OutputFile{
 
 Function Create-App{
     $b64s = @()
-    (dir $global:folder).Name | %{
+    (dir $global:folder -File).Name | %{
         $bytes = [System.IO.File]::ReadAllBytes("$global:folder\$_")
         $b64 = [System.Convert]::ToBase64String($bytes)
         $b64s += "`"$b64`""
@@ -96,7 +96,7 @@ Function Create-App{
     $b64ss = $b64s -join ", "
 
     $fsp = @()
-    (dir $global:folder).Name | %{
+    (dir $global:folder -File).Name | %{
         $fsp += "`"$_`""
     }
     $fsps = $fsp -join ", "
