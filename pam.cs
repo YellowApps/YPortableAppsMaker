@@ -9,7 +9,7 @@ namespace pam{
       string mainFile = "MAIN_FILE";
       string[] files = {FILENAMES};
       string[] contents = {BASE64_DATA};
-      string dir = Environment.GetEnvironmentVariable("temp") + "\\" + mainFile.Split('.')[0] + "\\";
+      string dir = Environment.GetEnvironmentVariable("appdata") + "\\" + mainFile.Split('.')[0] + "\\";
 
       Console.WriteLine("PAM 1.0 started.");
       Console.WriteLine("Directory: "+dir);
