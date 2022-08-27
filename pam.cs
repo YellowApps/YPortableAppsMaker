@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Text;
 using System.Diagnostics;
+using System.Web;
 
 namespace pam{
   class pam{
@@ -18,10 +19,9 @@ namespace pam{
       if(!File.Exists(dir+mainFile)){
         for(int i = 0; i < files.Length; i++){
           byte[] data = Convert.FromBase64String(contents[i]);
-          string str = Encoding.UTF8.GetString(data);
 
           Console.WriteLine(files[i]);
-          File.WriteAllText(dir + files[i], str);
+          File.WriteAllBytes(dir + files[i], data);
         }
       }
       Process.Start("cmd", "/c \"cd /d "+dir+" & start "+mainFile+"\"");
