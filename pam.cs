@@ -3,6 +3,8 @@ using System.IO;
 using System.Text;
 using System.Diagnostics;
 using System.Web;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace pam{
   class pam{
@@ -19,6 +21,16 @@ namespace pam{
       if(!File.Exists(dir+mainFile)){
         for(int i = 0; i < files.Length; i++){
           byte[] data = Convert.FromBase64String(contents[i]);
+
+          if(files[i].Contains("\\")){
+              char[] sep = {'\\'};
+              string[] fln = files[i].Split(sep);
+              if(fln.Length > 1){
+                  System.Array.Resize(ref fln, fln.Length - 1);
+                  string flns = String.Join("\\", fln);
+                  Directory.CreateDirectory(dir + flns);
+              }
+          }
 
           Console.WriteLine("Unpacking: " + files[i]);
           File.WriteAllBytes(dir + files[i], data);
