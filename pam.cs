@@ -14,7 +14,7 @@ namespace pam{
       string[] contents = {BASE64_DATA};
       string dir = Environment.GetEnvironmentVariable("appdata") + "\\" + mainFile.Split('.')[0] + "\\";
 
-      Console.WriteLine("PAM 1.0 started.");
+      Console.WriteLine("PAM 2.0");
       Console.WriteLine("Destination: "+dir);
 
       if(!Directory.Exists(dir)) Directory.CreateDirectory(dir);
@@ -32,7 +32,7 @@ namespace pam{
               }
           }
 
-          Console.WriteLine("Unpacking: " + files[i]);
+          Console.WriteLine("Extracting: " + files[i]);
           File.WriteAllBytes(dir + files[i], data);
         }
       }
