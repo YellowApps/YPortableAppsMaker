@@ -18,29 +18,35 @@ if(-not (Test-Path $csc)){
     exit
 }
 
-$folder = $args[0]
-$mainFile = $args[1]
-$outputFile = $args[2]
+try{
+	$folder = $args[0]
+	$mainFile = $args[1]
+	$outputFile = $args[2]
 
-$b64s = @()
-dir $folder -File -Recurse -Name | %{
-    $bytes = [System.IO.File]::ReadAllBytes("$folder\$_")
-    $b64 = [System.Convert]::ToBase64String($bytes)
-    $b64s += "`"$b64`""
+	$b64s = @()
+	dir $folder -File -Recurse -Name | %{
+		$bytes = [System.IO.File]::ReadAllBytes("$folder\$_")
+		$b64 = [System.Convert]::ToBase64String($bytes)
+		$b64s += "`"$b64`""
+	}
+	$b64ss = $b64s -join ", "
+
+	$fsp = @()
+	dir $folder -File -Recurse -Name | %{
+		$d = $_.Replace("\", "\\")
+		$fsp += "`"$d`""
+	}
+	$fsps = $fsp -join ", "
+
+	$cont = (Get-Content "pam.cs" -Raw) -replace "FILENAMES", $fsps -replace "BASE64_DATA", $b64ss -replace "MAIN_FILE", $mainFile
+
+	Set-Content "cs\pam_$mainFile.cs" $cont -Force
+
+	start $csc -ArgumentList "/nologo /out:$outputFile cs\pam_$mainFile.cs" -WindowStyle Hidden
+
+	echo "Приложение успешно создано."
+	exit 0
+}catch{
+	echo "Ошибка создания приложения."
+	exit 1
 }
-$b64ss = $b64s -join ", "
-
-$fsp = @()
-dir $folder -File -Recurse -Name | %{
-	$d = $_.Replace("\", "\\")
-    $fsp += "`"$d`""
-}
-$fsps = $fsp -join ", "
-
-$cont = (Get-Content "pam.cs" -Raw) -replace "FILENAMES", $fsps -replace "BASE64_DATA", $b64ss -replace "MAIN_FILE", $mainFile
-
-Set-Content "cs\pam_$mainFile.cs" $cont -Force
-
-start $csc -ArgumentList "/nologo /out:$outputFile cs\pam_$mainFile.cs" -WindowStyle Hidden
-
-echo "Приложение успешно создано."
